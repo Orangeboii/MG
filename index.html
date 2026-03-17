@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Boutique | Store & Style</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --mg-rose: #dcb0a7; --mg-dark: #1a1a1a; --mg-white: #ffffff; --mg-grey: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--mg-grey); }
+        
+        /* Login */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--mg-dark); display: flex; align-items: center; justify-content: center; z-index: 9999; color: white; }
+        .login-box { background: white; color: var(--mg-dark); padding: 40px; border-radius: 15px; width: 100%; max-width: 400px; }
+
+        /* Estilos Globales */
+        .navbar { background-color: var(--mg-dark); }
+        .navbar-brand { color: var(--mg-rose) !important; font-weight: 800; letter-spacing: 3px; }
+        .nav-link { color: var(--mg-white) !important; margin: 0 10px; }
+        .nav-link.active { color: var(--mg-rose) !important; border-bottom: 2px solid var(--mg-rose); }
+        .section-content { display: none; padding: 40px 0; }
+        .section-content.active { display: block; }
+
+        /* Hero */
+        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1200'); background-size: cover; background-position: center; height: 450px; display: flex; align-items: center; justify-content: center; color: white; border-radius: 15px; margin-bottom: 30px; text-align: center; }
+
+        /* Cards */
+        .card { border: none; transition: 0.3s; border-radius: 12px; overflow: hidden; }
+        .card-img-top { height: 320px; object-fit: cover; }
+        .badge-oferta { background-color: var(--mg-rose); color: var(--mg-dark); position: absolute; top: 10px; right: 10px; font-weight: bold; padding: 5px 10px; }
+
+        /* Botón WhatsApp */
+        .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 35px; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); z-index: 10000; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s; }
+        .whatsapp-btn:hover { transform: scale(1.1); color: white; background-color: #128c7e; }
+        
+        #btn-admin-only { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <div class="login-box shadow-lg text-center">
+        <h2 class="fw-bold mb-4">MG <span style="color: var(--mg-rose)">BOUTIQUE</span></h2>
+        <div class="mb-3 text-start"><label>Correo</label><input type="email" id="email" class="form-control" placeholder="admin@mg.com"></div>
+        <div class="mb-3 text-start"><label>Contraseña</label><input type="password" id="pass" class="form-control" placeholder="mg123"></div>
+        <button class="btn btn-dark w-100 mb-3" onclick="intentarLogin()">Entrar como Admin</button>
+        <hr>
+        <button class="btn btn-outline-secondary w-100" onclick="entrarApp(false)">Entrar como Invitado</button>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg sticky-top shadow d-none" id="main-nav">
+    <div class="container">
+        <a class="navbar-brand" href="#">MG.Boutique.Style</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('inicio', this)">INICIO</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('catalogo', this)">CATÁLOGO</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('ofertas', this)">OFERTAS</a></li>
+                <li class="nav-item" id="btn-admin-only"><a class="nav-link fw-bold text-warning" href="#" onclick="showSection('admin', this)">⚙️ ADMIN</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container d-none" id="main-content">
+    <section id="inicio" class="section-content active">
+        <div class="hero"><div><h1 class="display-4 fw-bold">BIENVENIDO A MG</h1><p class="lead">Lo mejor de la moda en un solo lugar</p></div></div>
+    </section>
+
+    <section id="catalogo" class="section-content">
+        <div class="row">
+            <aside class="col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><h5>Filtros</h5><select id="fCat" class="form-select mb-3" onchange="filtrar()"><option value="todos">Todo</option><option value="camisetas">Camisetas</option><option value="pantalones">Pantalones</option></select><input type="range" class="form-range" id="fPrecio" min="0" max="300" value="300" oninput="filtrar()"><p>Máx: $<span id="valP">300</span></p></div></aside>
+            <main class="col-lg-9"><div id="grid-catalogo" class="row row-cols-1 row-cols-md-3 g-4"></div></main>
+        </div>
+    </section>
+
+    <section id="ofertas" class="section-content"><h2 class="text-center fw-bold mb-4">OFERTAS</h2><div id="grid-ofertas" class="row row-cols-1 row-cols-md-3 g-4"></div></section>
+
+    <section id="admin" class="section-content">
+        <div class="d-flex justify-content-between mb-4"><h2>Gestión</h2><button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalProd" onclick="limpiarForm()">+ Nuevo</button></div>
+        <table class="table bg-white rounded shadow-sm"><thead><tr><th>Img</th><th>Nombre</th><th>Precio</th><th>Acciones</th></tr></thead><tbody id="tabla-admin"></tbody></table>
+    </section>
+</div>
+
+<div class="modal fade" id="modalProd" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5>Producto</h5></div><div class="modal-body"><form id="formP"><input type="hidden" id="pId"><div class="mb-2"><label>Nombre</label><input type="text" id="pNom" class="form-control"></div><div class="mb-2"><label>Precio</label><input type="number" id="pPre" class="form-control"></div><div class="mb-2"><label>URL Imagen</label><input type="text" id="pImg" class="form-control"></div><div class="form-check form-switch"><input type="checkbox" id="pOf" class="form-check-input"><label>Oferta</label></div></form></div><div class="modal-footer"><button class="btn btn-dark w-100" onclick="guardar()">Guardar</button></div></div></div>
+</div>
+
+<a href="https://wa.me/56938926682?text=Hola%20MG%20Boutique,%20me%20gustaría%20consultar%20por%20un%20producto" class="whatsapp-btn" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    const ADMIN_EMAIL = "admin@mg.com"; const ADMIN_PASS = "mg123";
+    let productos = JSON.parse(localStorage.getItem('mg_db')) || [{ id: 1, nombre: "Top MG White", precio: 25, oferta: true, cat: "camisetas", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" }];
+
+    function intentarLogin() {
+        if(document.getElementById('email').value === ADMIN_EMAIL && document.getElementById('pass').value === ADMIN_PASS) { entrarApp(true); } else { alert("Error"); }
+    }
+
+    function entrarApp(isAdmin) {
+        if(isAdmin) document.getElementById('btn-admin-only').style.display = 'block';
+        document.getElementById('login-screen').classList.add('d-none');
+        document.getElementById('main-nav').classList.remove('d-none');
+        document.getElementById('main-content').classList.remove('d-none');
+        renderCards(productos, 'grid-catalogo');
+    }
+
+    function showSection(id, element) {
+        document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        element.classList.add('active');
+        if(id === 'admin') renderAdmin();
+        if(id === 'catalogo') filtrar();
+        if(id === 'ofertas') renderCards(productos.filter(p => p.oferta), 'grid-ofertas');
+    }
+
+    function renderCards(lista, contenedorId) {
+        const cont = document.getElementById(contenedorId); cont.innerHTML = '';
+        lista.forEach(p => { cont.innerHTML += `<div class="col"><div class="card h-100 shadow-sm border-0">${p.oferta ? '<span class="badge badge-oferta">OFERTA</span>' : ''}<img src="${p.img}" class="card-img-top"><div class="card-body text-center"><h6>${p.nombre}</h6><p class="fw-bold" style="color: var(--mg-rose);">$${p.precio}</p></div></div></div>`; });
+    }
+
+    function renderAdmin() {
+        const tabla = document.getElementById('tabla-admin'); tabla.innerHTML = '';
+        productos.forEach(p => { tabla.innerHTML += `<tr><td><img src="${p.img}" width="40"></td><td>${p.nombre}</td><td>$${p.precio}</td><td><button class="btn btn-sm btn-dark" onclick="editar(${p.id})">✎</button> <button class="btn btn-sm btn-danger" onclick="borrar(${p.id})">X</button></td></tr>`; });
+    }
+
+    function guardar() {
+        const id = document.getElementById('pId').value;
+        const p = { id: id ? parseInt(id) : Date.now(), nombre: document.getElementById('pNom').value, precio: parseFloat(document.getElementById('pPre').value), cat: "camisetas", img: document.getElementById('pImg').value, oferta: document.getElementById('pOf').checked };
+        if(id) { const i = productos.findIndex(x => x.id == id); productos[i] = p; } else { productos.push(p); }
+        localStorage.setItem('mg_db', JSON.stringify(productos));
+        bootstrap.Modal.getInstance(document.getElementById('modalProd')).hide();
+        renderAdmin();
+    }
+
+    function borrar(id) { if(confirm('¿Borrar?')) { productos = productos.filter(x => x.id != id); localStorage.setItem('mg_db', JSON.stringify(productos)); renderAdmin(); } }
+    function editar(id) { const p = productos.find(x => x.id == id); document.getElementById('pId').value = p.id; document.getElementById('pNom').value = p.nombre; document.getElementById('pPre').value = p.precio; document.getElementById('pImg').value = p.img; document.getElementById('pOf').checked = p.oferta; new bootstrap.Modal(document.getElementById('modalProd')).show(); }
+    function filtrar() { const pMax = document.getElementById('fPrecio').value; document.getElementById('valP').innerText = pMax; renderCards(productos.filter(p => p.precio <= pMax), 'grid-catalogo'); }
+    function limpiarForm() { document.getElementById('formP').reset(); document.getElementById('pId').value = ''; }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
