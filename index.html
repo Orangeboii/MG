@@ -6,285 +6,160 @@
     <title>MG Boutique | Store & Style</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --mg-rose: #dcb0a7; --mg-dark: #1a1a1a; --mg-white: #ffffff; --mg-grey: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--mg-grey); min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* Pantalla de Login con protección visual */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--mg-dark); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-box { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 400px; color: var(--mg-dark); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #login-msg { font-size: 0.9rem; margin-top: 15px; min-height: 1.5rem; transition: 0.3s; }
-
-        /* Navbar */
-        .navbar { background-color: var(--mg-dark); }
-        .navbar-brand { color: var(--mg-rose) !important; font-weight: 800; letter-spacing: 2px; text-decoration: none; }
-        .nav-link { color: var(--mg-white) !important; margin: 0 10px; cursor: pointer; }
-        .nav-link.active { color: var(--mg-rose) !important; font-weight: bold; border-bottom: 2px solid var(--mg-rose); }
-
-        /* Secciones */
-        .section-content { display: none; padding: 40px 0; flex: 1; }
-        .section-content.active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Hero */
-        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1200'); background-size: cover; background-position: center; height: 350px; display: flex; align-items: center; justify-content: center; color: white; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-
-        /* Cards de Productos */
-        .card { border: none; transition: 0.3s; border-radius: 12px; overflow: hidden; height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .card-img-top { height: 320px; object-fit: cover; background-color: #eee; }
-        .badge-oferta { background-color: var(--mg-rose); color: var(--mg-dark); position: absolute; top: 10px; right: 10px; font-weight: bold; padding: 5px 12px; border-radius: 5px; z-index: 5; }
-
-        /* Footer */
-        footer { background: var(--mg-dark); color: white; padding: 25px 0; margin-top: auto; display: none; }
-        
-        /* Utilidades Admin */
-        #preview-img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; display: none; margin-top: 10px; border: 1px solid #ddd; }
-        .whatsapp-btn { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 30px; z-index: 9999; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-box text-center">
-        <h2 class="fw-bold mb-4">MG <span style="color: var(--mg-rose)">BOUTIQUE</span></h2>
-        <div class="mb-3 text-start">
-            <label class="small fw-bold">Usuario</label>
-            <input type="text" id="email" class="form-control" placeholder="Ej: admin@mg.com" autocomplete="off">
-        </div>
-        <div class="mb-3 text-start">
-            <label class="small fw-bold">Contraseña</label>
-            <input type="password" id="pass" class="form-control" placeholder="••••••••">
-        </div>
-        <button class="btn btn-dark w-100 mb-2" onclick="intentarLogin()">Acceder como Admin</button>
-        <button class="btn btn-outline-secondary btn-sm w-100" onclick="entrarApp(false)">Entrar como Invitado</button>
-        <div id="login-msg" class="text-danger fw-bold small"></div>
-    </div>
-</div>
-
-<nav class="navbar navbar-expand-lg sticky-top d-none" id="main-nav">
+<nav class="navbar navbar-expand-lg sticky-top" id="main-nav">
     <div class="container">
-        <a class="navbar-brand">MG.BOUTIQUE.STYLE</a>
+        <a class="navbar-brand" onclick="showSection('inicio', this)" style="cursor:pointer">MG.BOUTIQUE.STYLE</a>
         <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <i class="fas fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto text-center">
                 <li class="nav-item"><a class="nav-link active" onclick="showSection('inicio', this)">INICIO</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="showSection('catalogo', this)">CATÁLOGO</a></li>
+                <li class="nav-item"><a class="nav-link" id="link-catalogo" onclick="showSection('catalogo', this)">CATÁLOGO</a></li>
                 <li class="nav-item"><a class="nav-link" onclick="showSection('ofertas', this)">OFERTAS</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="showSection('nosotros', this)">NOSOTROS</a></li>
-                <li class="nav-item d-none" id="btn-admin-nav"><a class="nav-link fw-bold text-warning" onclick="showSection('admin', this)">⚙️ PANEL</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" onclick="location.reload()">SALIR</a></li>
+                <li class="nav-item d-none" id="btn-admin-nav">
+                    <a class="nav-link fw-bold text-warning" onclick="showSection('admin', this)">⚙️ PANEL</a>
+                </li>
+                <li class="nav-item" id="nav-login-item">
+                    <a class="nav-link" onclick="showSection('login', this)"><i class="fas fa-user"></i> LOGIN</a>
+                </li>
+                <li class="nav-item d-none" id="nav-logout-item">
+                    <a class="nav-link text-danger" onclick="logout()">SALIR</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container d-none" id="main-wrapper">
-    
+<div class="container" id="main-wrapper">
     <section id="inicio" class="section-content active">
         <div class="hero">
             <div class="px-3">
-                <h1 class="display-5 fw-bold">TU ESTILO, TU ESENCIA</h1>
-                <p class="lead small">Colecciones exclusivas MG Boutique Style.</p>
-                <button class="btn btn-light btn-sm fw-bold px-4" onclick="document.querySelectorAll('.nav-link')[1].click()">DESCUBRIR</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="nosotros" class="section-content">
-        <div class="row align-items-center bg-white p-4 rounded shadow-sm">
-            <div class="col-md-6 mb-3">
-                <h2 class="fw-bold">MG BOUTIQUE</h2>
-                <p class="text-muted">Elegancia y tendencia en un solo lugar. Síguenos en nuestras redes:</p>
-                <div class="mt-3">
-                    <a href="https://www.instagram.com/mg.boutique.style" target="_blank" class="btn btn-outline-dark me-2"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@mgboutiquestyle" target="_blank" class="btn btn-outline-dark"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="col-md-6 text-center">
-                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400" class="img-fluid rounded shadow-sm">
+                <h1 class="display-4 fw-bold">TU ESTILO, TU ESENCIA</h1>
+                <p class="lead">Camisetas, Buzos y Conjuntos exclusivos.</p>
+                <button class="btn btn-light btn-lg fw-bold px-5 rounded-pill shadow" onclick="irACatalogo()">DESCUBRIR CATÁLOGO</button>
             </div>
         </div>
     </section>
 
     <section id="catalogo" class="section-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold m-0">CATÁLOGO</h2>
-            <div class="bg-white p-2 rounded shadow-sm d-flex align-items-center">
-                <label class="me-2 small fw-bold">Max: $<span id="valP">1000</span></label>
-                <input type="range" class="form-range" style="width:100px" id="fPrecio" min="0" max="1000" value="1000" oninput="filtrar()">
-            </div>
+        <h2 class="fw-bold mb-3">NUESTRO CATÁLOGO</h2>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <input type="radio" class="btn-check" name="cat" id="cat-todos" checked onchange="filtrarCategoria('todos')">
+            <label class="btn btn-outline-dark filter-btn" for="cat-todos">Todos</label>
+            <input type="radio" class="btn-check" name="cat" id="cat-cam" onchange="filtrarCategoria('Camiseta')">
+            <label class="btn btn-outline-dark filter-btn" for="cat-cam">Camisetas</label>
+            <input type="radio" class="btn-check" name="cat" id="cat-buz" onchange="filtrarCategoria('Buzo')">
+            <label class="btn btn-outline-dark filter-btn" for="cat-buz">Buzos</label>
+            <input type="radio" class="btn-check" name="cat" id="cat-con" onchange="filtrarCategoria('Conjunto')">
+            <label class="btn btn-outline-dark filter-btn" for="cat-con">Conjuntos</label>
         </div>
         <div id="grid-catalogo" class="row row-cols-1 row-cols-md-3 g-4"></div>
     </section>
 
     <section id="ofertas" class="section-content">
-        <h2 class="text-center fw-bold mb-4">🔥 PRECIOS ESPECIALES</h2>
+        <h2 class="text-center fw-bold mb-4">🔥 OFERTAS IMPERDIBLES</h2>
         <div id="grid-ofertas" class="row row-cols-1 row-cols-md-3 g-4"></div>
+    </section>
+
+    <section id="login" class="section-content">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+            <div class="login-box-inline text-center p-4 bg-white rounded shadow-sm" style="max-width: 400px; width: 100%;">
+                <h3 class="fw-bold mb-4">Acceso <span style="color: var(--mg-rose)">Admin</span></h3>
+                <div class="mb-3 text-start">
+                    <label class="small fw-bold">Usuario</label>
+                    <input type="text" id="email" class="form-control">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="small fw-bold">Contraseña</label>
+                    <input type="password" id="pass" class="form-control">
+                </div>
+                <button class="btn btn-dark w-100" onclick="intentarLogin()">INICIAR SESIÓN</button>
+                <div id="login-msg" class="text-danger fw-bold small mt-3"></div>
+            </div>
+        </div>
     </section>
 
     <section id="admin" class="section-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">Gestión de Inventario</h2>
-            <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalProd" onclick="limpiarForm()">+ Agregar</button>
+            <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalProd" onclick="limpiarForm()">+ Agregar Producto</button>
         </div>
         <div class="table-responsive bg-white p-3 rounded shadow-sm">
             <table class="table align-middle">
-                <thead><tr><th>Img</th><th>Producto</th><th>Precio</th><th>Acciones</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Img</th>
+                        <th>Producto</th>
+                        <th>Cat.</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
                 <tbody id="tabla-admin"></tbody>
             </table>
         </div>
     </section>
 </div>
 
-<footer id="main-footer" class="text-center">
-    <small class="text-muted">© 2026 MG Boutique Style | Santiago, Chile</small>
+<footer class="text-center mt-5 py-4 bg-dark text-white">
+    <small>© 2026 MG Boutique Style | Santiago, Chile</small>
 </footer>
 
-<div class="modal fade" id="modalProd" tabindex="-1">
+<div class="modal fade" id="modalProd" tabindex="-1" aria-labelledby="modalProdLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0">
-            <div class="modal-header bg-dark text-white"><h5>Ficha de Producto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalProdLabel">Configuración de Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <form id="formP">
                     <input type="hidden" id="pId">
-                    <div class="mb-3"><label class="form-label small fw-bold">Nombre del Artículo</label><input type="text" id="pNom" class="form-control" required></div>
-                    <div class="mb-3"><label class="form-label small fw-bold">Precio ($)</label><input type="number" id="pPre" class="form-control" required></div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Fotografía</label>
-                        <input type="file" id="pFile" class="form-control" accept="image/*" onchange="previewFile()">
-                        <img id="preview-img" src="">
-                        <input type="hidden" id="pImgBase64">
+                    <div class="mb-2">
+                        <label class="small fw-bold">Nombre</label>
+                        <input type="text" id="pNom" class="form-control" placeholder="Ej: Camiseta Oversize" required>
                     </div>
-                    <div class="form-check form-switch"><input type="checkbox" id="pOf" class="form-check-input"><label class="form-check-label">Mostrar en sección Ofertas</label></div>
+                    <div class="mb-2">
+                        <label class="small fw-bold">Precio ($)</label>
+                        <input type="number" id="pPre" class="form-control" placeholder="0.00" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="small fw-bold">Categoría</label>
+                        <select id="pCat" class="form-select">
+                            <option value="Camiseta">Camiseta</option>
+                            <option value="Buzo">Buzo</option>
+                            <option value="Conjunto">Conjunto</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="small fw-bold">Imagen del Producto</label>
+                        <input type="file" id="pFile" class="form-control" onchange="previewFile()">
+                        <input type="hidden" id="pImgBase64">
+                        <img id="preview-img" src="" style="width: 100%; height: 180px; object-fit: cover; display: none; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                    <div class="form-check form-switch mt-3">
+                        <input type="checkbox" id="pOf" class="form-check-input">
+                        <label class="form-check-label fw-bold" for="pOf">Destacar en sección de Ofertas 🔥</label>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer"><button class="btn btn-dark w-100" onclick="guardar()">Guardar en Base de Datos</button></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-dark" onclick="guardar()">Guardar Cambios</button>
+            </div>
         </div>
     </div>
 </div>
 
-<a href="https://wa.me/56938926682" id="wa-link" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<a href="https://wa.me/56938926682" id="wa-link" class="whatsapp-btn" style="display:flex;" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
-<script>
-    // CREDENCIALES OFUSCADAS EN BASE64 (Para que no salgan al inspeccionar)
-    const _0xa4 = ["YWRtaW5AbWcuY29t", "bWcxMjM="]; 
-
-    let productos = JSON.parse(localStorage.getItem('mg_v_protected_db')) || [];
-
-    function intentarLogin() {
-        const u = document.getElementById('email').value.trim();
-        const p = document.getElementById('pass').value.trim();
-        const m = document.getElementById('login-msg');
-
-        // Validación detallada de campos
-        if (!u && !p) { m.innerText = "⚠️ Ingrese usuario y contraseña."; return; }
-        if (!u) { m.innerText = "⚠️ El campo Usuario es obligatorio."; return; }
-        if (!p) { m.innerText = "⚠️ El campo Contraseña es obligatorio."; return; }
-
-        // Validación de credenciales decodificadas
-        if (u === atob(_0xa4[0]) && p === atob(_0xa4[1])) {
-            m.innerText = "";
-            entrarApp(true);
-            console.clear(); 
-        } else if (u !== atob(_0xa4[0])) {
-            m.innerText = "❌ El usuario no existe.";
-        } else {
-            m.innerText = "❌ Contraseña incorrecta.";
-        }
-    }
-
-    function entrarApp(isAdmin) {
-        if(isAdmin) document.getElementById('btn-admin-nav').classList.remove('d-none');
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-nav').classList.remove('d-none');
-        document.getElementById('main-wrapper').classList.remove('d-none');
-        document.getElementById('main-footer').style.display = 'block';
-        document.getElementById('wa-link').style.display = 'flex';
-        renderAll();
-    }
-
-    function showSection(id, el) {
-        document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        el.classList.add('active');
-        const navCol = document.getElementById('navbarNav');
-        if(navCol.classList.contains('show')) new bootstrap.Collapse(navCol).hide();
-    }
-
-    function previewFile() {
-        const file = document.getElementById('pFile').files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            document.getElementById('pImgBase64').value = reader.result;
-            document.getElementById('preview-img').src = reader.result;
-            document.getElementById('preview-img').style.display = 'block';
-        };
-        if (file) reader.readAsDataURL(file);
-    }
-
-    function renderAll() {
-        renderGrid(productos, 'grid-catalogo');
-        renderGrid(productos.filter(p => p.oferta), 'grid-ofertas');
-        const t = document.getElementById('tabla-admin'); t.innerHTML = '';
-        productos.forEach(p => {
-            t.innerHTML += `<tr><td><img src="${p.img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px"></td><td class="small fw-bold">${p.nombre}</td><td>$${p.precio}</td><td><button class="btn btn-sm btn-dark" onclick="editar(${p.id})">✎</button> <button class="btn btn-sm btn-danger" onclick="borrar(${p.id})">X</button></td></tr>`;
-        });
-    }
-
-    function renderGrid(lista, contId) {
-        const cont = document.getElementById(contId); if(!cont) return;
-        cont.innerHTML = lista.length ? '' : '<p class="text-center w-100 py-4 small">Sin existencias.</p>';
-        lista.forEach(p => {
-            cont.innerHTML += `<div class="col"><div class="card">${p.oferta?'<span class="badge badge-oferta">OFERTA</span>':''}<img src="${p.img}" class="card-img-top"><div class="card-body text-center"><h6 class="mb-1">${p.nombre}</h6><p class="fw-bold mb-2" style="color:var(--mg-rose)">$${p.precio}</p><a href="https://wa.me/56938926682?text=Consulta:%20${p.nombre}" target="_blank" class="btn btn-dark btn-sm rounded-pill px-4">Consultar</a></div></div></div>`;
-        });
-    }
-
-    function guardar() {
-        const id = document.getElementById('pId').value;
-        const img = document.getElementById('pImgBase64').value;
-        const nom = document.getElementById('pNom').value;
-        const pre = document.getElementById('pPre').value;
-        if(!img || !nom || !pre) return alert("Error: Faltan datos o imagen.");
-        const p = { id: id ? parseInt(id) : Date.now(), nombre: nom, precio: pre, img: img, oferta: document.getElementById('pOf').checked };
-        if(id) { const i = productos.findIndex(x => x.id == id); productos[i] = p; } else { productos.push(p); }
-        localStorage.setItem('mg_v_protected_db', JSON.stringify(productos));
-        bootstrap.Modal.getInstance(document.getElementById('modalProd')).hide();
-        renderAll();
-    }
-
-    function borrar(id) { if(confirm('¿Eliminar producto?')) { productos = productos.filter(x => x.id != id); localStorage.setItem('mg_v_protected_db', JSON.stringify(productos)); renderAll(); } }
-    
-    function editar(id) {
-        const p = productos.find(x => x.id == id);
-        document.getElementById('pId').value = p.id; 
-        document.getElementById('pNom').value = p.nombre; 
-        document.getElementById('pPre').value = p.precio;
-        document.getElementById('pImgBase64').value = p.img; 
-        document.getElementById('preview-img').src = p.img; 
-        document.getElementById('preview-img').style.display = 'block';
-        document.getElementById('pOf').checked = p.oferta; 
-        new bootstrap.Modal(document.getElementById('modalProd')).show();
-    }
-
-    function filtrar() { 
-        const v = document.getElementById('fPrecio').value; 
-        document.getElementById('valP').innerText = v; 
-        renderGrid(productos.filter(p => p.precio <= v), 'grid-catalogo'); 
-    }
-
-    function limpiarForm() { 
-        document.getElementById('formP').reset(); 
-        document.getElementById('pId').value = ''; 
-        document.getElementById('preview-img').style.display = 'none'; 
-        document.getElementById('pImgBase64').value = ''; 
-    }
-
-    // Bloqueo de inspección rápido
-    document.addEventListener('contextmenu', e => e.preventDefault());
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
