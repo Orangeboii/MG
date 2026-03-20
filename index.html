@@ -19,6 +19,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto text-center">
                 <li class="nav-item"><a class="nav-link active" onclick="showSection('inicio', this)">INICIO</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('nosotros', this)">NOSOTROS</a></li>
                 <li class="nav-item"><a class="nav-link" id="link-catalogo" onclick="showSection('catalogo', this)">CATÁLOGO</a></li>
                 <li class="nav-item"><a class="nav-link" onclick="showSection('ofertas', this)">OFERTAS</a></li>
                 <li class="nav-item d-none" id="btn-admin-nav">
@@ -46,6 +47,28 @@
         </div>
     </section>
 
+    <section id="nosotros" class="section-content">
+        <div class="row align-items-center py-5">
+            <div class="col-md-6 mb-4">
+                <h2 class="fw-bold mb-4">Sobre <span style="color:var(--mg-rose)">MG Boutique</span></h2>
+                <p class="lead text-muted">Moda urbana seleccionada para quienes buscan destacar con autenticidad y confort.</p>
+                <p>Nacimos con el objetivo de traer lo mejor en tendencias directamente a tu closet. Cada prenda en nuestro catálogo ha sido elegida por su calidad y diseño único.</p>
+                <div class="mt-4">
+                    <h5 class="fw-bold mb-3">Síguenos:</h5>
+                    <a href="https://www.instagram.com/" target="_blank" class="btn btn-outline-dark me-2 rounded-pill px-4">
+                        <i class="fab fa-instagram me-2"></i>Instagram
+                    </a>
+                    <a href="https://www.tiktok.com/" target="_blank" class="btn btn-outline-dark rounded-pill px-4">
+                        <i class="fab fa-tiktok me-2"></i>TikTok
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=800&auto=format&fit=crop" class="img-fluid rounded-4 shadow" alt="MG Boutique Style">
+            </div>
+        </div>
+    </section>
+
     <section id="catalogo" class="section-content">
         <h2 class="fw-bold mb-3">NUESTRO CATÁLOGO</h2>
         <div class="d-flex flex-wrap gap-2 mb-4">
@@ -69,7 +92,7 @@
     <section id="login" class="section-content">
         <div class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
             <div class="login-box-inline text-center p-4 bg-white rounded shadow-sm" style="max-width: 400px; width: 100%;">
-                <h3 class="fw-bold mb-4">Acceso <span style="color: var(--mg-rose)">Admin</span></h3>
+                <h3 class="fw-bold mb-4">Acceso Administrativo</h3>
                 <div class="mb-3 text-start">
                     <label class="small fw-bold">Usuario</label>
                     <input type="text" id="email" class="form-control">
@@ -86,19 +109,12 @@
 
     <section id="admin" class="section-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Gestión de Inventario</h2>
+            <h2 class="fw-bold">Panel de Control</h2>
             <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalProd" onclick="limpiarForm()">+ Agregar Producto</button>
         </div>
         <div class="table-responsive bg-white p-3 rounded shadow-sm">
             <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th>Img</th>
-                        <th>Producto</th>
-                        <th>Cat.</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Img</th><th>Producto</th><th>Cat.</th><th>Acciones</th></tr></thead>
                 <tbody id="tabla-admin"></tbody>
             </table>
         </div>
@@ -109,23 +125,23 @@
     <small>© 2026 MG Boutique Style | Santiago, Chile</small>
 </footer>
 
-<div class="modal fade" id="modalProd" tabindex="-1" aria-labelledby="modalProdLabel" aria-hidden="true">
+<div class="modal fade" id="modalProd" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="modalProdLabel">Configuración de Producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Gestión de Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="formP">
                     <input type="hidden" id="pId">
                     <div class="mb-2">
-                        <label class="small fw-bold">Nombre</label>
-                        <input type="text" id="pNom" class="form-control" placeholder="Ej: Camiseta Oversize" required>
+                        <label class="small fw-bold">Nombre del Producto</label>
+                        <input type="text" id="pNom" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label class="small fw-bold">Precio ($)</label>
-                        <input type="number" id="pPre" class="form-control" placeholder="0.00" required>
+                        <input type="number" id="pPre" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label class="small fw-bold">Categoría</label>
@@ -136,20 +152,19 @@
                         </select>
                     </div>
                     <div class="mb-2">
-                        <label class="small fw-bold">Imagen del Producto</label>
+                        <label class="small fw-bold">Imagen</label>
                         <input type="file" id="pFile" class="form-control" onchange="previewFile()">
                         <input type="hidden" id="pImgBase64">
-                        <img id="preview-img" src="" style="width: 100%; height: 180px; object-fit: cover; display: none; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                        <img id="preview-img" src="" style="width: 100%; height: 150px; object-fit: cover; display:none; margin-top:10px; border-radius:8px;">
                     </div>
                     <div class="form-check form-switch mt-3">
                         <input type="checkbox" id="pOf" class="form-check-input">
-                        <label class="form-check-label fw-bold" for="pOf">Destacar en sección de Ofertas 🔥</label>
+                        <label class="form-check-label fw-bold">Destacar en Ofertas 🔥</label>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-dark" onclick="guardar()">Guardar Cambios</button>
+                <button type="button" class="btn btn-dark w-100" onclick="guardar()">Guardar Cambios</button>
             </div>
         </div>
     </div>

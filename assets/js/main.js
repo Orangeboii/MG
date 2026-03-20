@@ -1,57 +1,43 @@
-// Credenciales seguras (admin@mg.com / mg123)
+// Credenciales Cifradas
 const _0xa4 = ["YWRtaW5AbWcuY29t", "bWcxMjM="]; 
 let productos = JSON.parse(localStorage.getItem('mg_v_protected_db')) || [];
 
-// 1. INICIALIZACIÓN: Cargar productos al entrar
+// Iniciar App
 document.addEventListener('DOMContentLoaded', () => {
     renderAll();
 });
 
-// 2. SISTEMA DE ACCESO
+// Sistema de Login
 function intentarLogin() {
     const u = document.getElementById('email').value.trim();
     const p = document.getElementById('pass').value.trim();
     const m = document.getElementById('login-msg');
 
     if (u === atob(_0xa4[0]) && p === atob(_0xa4[1])) {
-        // Liberar visualmente los botones de Admin
         document.getElementById('btn-admin-nav').classList.remove('d-none');
         document.getElementById('nav-logout-item').classList.remove('d-none');
         document.getElementById('nav-login-item').classList.add('d-none');
-
-        // Limpiar campos de login
         m.innerText = "";
-        document.getElementById('email').value = "";
-        document.getElementById('pass').value = "";
-
-        // Redirigir al Panel Admin
         showSection('admin', document.querySelector('#btn-admin-nav a'));
-        
-        console.clear();
-        alert("¡Acceso concedido! Panel de administración liberado.");
+        alert("¡Acceso concedido!");
     } else {
         m.innerText = "❌ Datos incorrectos.";
     }
 }
 
 function logout() {
-    if(confirm('¿Cerrar sesión administrativa?')) {
-        location.reload(); 
-    }
+    if(confirm('¿Deseas cerrar la sesión administrativa?')) location.reload();
 }
 
-// 3. NAVEGACIÓN ENTRE SECCIONES
+// Navegación
 function showSection(id, el) {
-    // Ocultar todas las secciones y mostrar la elegida
     document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
     const target = document.getElementById(id);
     if(target) target.classList.add('active');
     
-    // Manejo de clase 'active' en los links del Navbar
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     if(el) el.classList.add('active');
     
-    // Cerrar el menú móvil automáticamente al hacer clic en un link
     const navCol = document.getElementById('navbarNav');
     if (navCol && navCol.classList.contains('show')) {
         const bsCollapse = bootstrap.Collapse.getInstance(navCol) || new bootstrap.Collapse(navCol);
@@ -64,7 +50,7 @@ function irACatalogo() {
     window.scrollTo(0, 0);
 }
 
-// 4. RENDERIZADO DE PRODUCTOS (VISTA PÚBLICA Y TABLA ADMIN)
+// Renderizado
 function renderAll() {
     renderGrid(productos, 'grid-catalogo');
     renderGrid(productos.filter(p => p.oferta), 'grid-ofertas');
@@ -90,21 +76,19 @@ function renderAll() {
 function renderGrid(lista, contId) {
     const cont = document.getElementById(contId); 
     if(!cont) return;
-    
     cont.innerHTML = lista.length ? '' : '<p class="text-center w-100 py-4 small text-muted">Próximamente más productos...</p>';
     
     lista.forEach(p => {
         cont.innerHTML += `
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm">
-                    ${p.oferta ? '<span class="badge badge-oferta" style="background:var(--mg-rose); position:absolute; top:10px; right:10px;">OFERTA</span>' : ''}
+                    ${p.oferta ? '<span class="badge" style="background:var(--mg-rose); position:absolute; top:10px; right:10px;">OFERTA</span>' : ''}
                     <img src="${p.img}" class="card-img-top" style="height:250px; object-fit:cover;">
                     <div class="card-body text-center">
                         <h6 class="mb-1 fw-bold">${p.nombre}</h6>
                         <p class="small text-muted mb-1">${p.categoria}</p>
                         <p class="fw-bold mb-2" style="color:var(--mg-rose)">$${p.precio}</p>
-                        <a href="https://wa.me/56938926682?text=Hola!%20Me%20interesa%20el%20producto:%20${p.nombre}" 
-                           target="_blank" class="btn btn-dark btn-sm rounded-pill px-4">Consultar</a>
+                        <a href="https://wa.me/56938926682?text=Consulta:%20${p.nombre}" target="_blank" class="btn btn-dark btn-sm rounded-pill px-4">Consultar</a>
                     </div>
                 </div>
             </div>`;
@@ -116,20 +100,19 @@ function filtrarCategoria(cat) {
     else renderGrid(productos.filter(p => p.categoria === cat), 'grid-catalogo');
 }
 
-// 5. GESTIÓN DE ARCHIVOS E IMÁGENES
+// Gestión de Producto (CRUD)
 function previewFile() {
     const file = document.getElementById('pFile').files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
         document.getElementById('pImgBase64').value = reader.result;
         const preview = document.getElementById('preview-img');
-        preview.src = reader.result;
+        preview.src = reader.result; 
         preview.style.display = 'block';
     };
     if (file) reader.readAsDataURL(file);
 }
 
-// 6. CRUD DE PRODUCTOS (ADMIN)
 function guardar() {
     const id = document.getElementById('pId').value;
     const img = document.getElementById('pImgBase64').value;
@@ -137,7 +120,7 @@ function guardar() {
     const pre = document.getElementById('pPre').value;
     const cat = document.getElementById('pCat').value;
     
-    if(!img || !nom || !pre) return alert("Faltan datos obligatorios (Nombre, Precio o Imagen).");
+    if(!img || !nom || !pre) return alert("Faltan datos (Nombre, Precio o Imagen).");
     
     const p = { 
         id: id ? parseInt(id) : Date.now(), 
@@ -157,16 +140,14 @@ function guardar() {
 
     localStorage.setItem('mg_v_protected_db', JSON.stringify(productos));
     
-    // Cerrar modal correctamente
-    const modalEl = document.getElementById('modalProd');
-    const modalInst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-    modalInst.hide();
+    const modalInst = bootstrap.Modal.getInstance(document.getElementById('modalProd'));
+    if(modalInst) modalInst.hide();
     
     renderAll();
 }
 
 function borrar(id) { 
-    if(confirm('¿Estás seguro de eliminar este producto?')) { 
+    if(confirm('¿Seguro que quieres eliminar este producto?')) { 
         productos = productos.filter(x => x.id != id); 
         localStorage.setItem('mg_v_protected_db', JSON.stringify(productos)); 
         renderAll(); 
@@ -176,21 +157,16 @@ function borrar(id) {
 function editar(id) {
     const p = productos.find(x => x.id == id);
     if(!p) return;
-
     document.getElementById('pId').value = p.id; 
     document.getElementById('pNom').value = p.nombre; 
     document.getElementById('pPre').value = p.precio;
     document.getElementById('pCat').value = p.categoria;
     document.getElementById('pImgBase64').value = p.img; 
-    
     const preview = document.getElementById('preview-img');
     preview.src = p.img; 
     preview.style.display = 'block';
-    
     document.getElementById('pOf').checked = p.oferta; 
-
-    const modal = new bootstrap.Modal(document.getElementById('modalProd'));
-    modal.show();
+    new bootstrap.Modal(document.getElementById('modalProd')).show();
 }
 
 function limpiarForm() { 
@@ -200,5 +176,4 @@ function limpiarForm() {
     document.getElementById('pImgBase64').value = ''; 
 }
 
-// Seguridad básica
 document.addEventListener('contextmenu', e => e.preventDefault());
